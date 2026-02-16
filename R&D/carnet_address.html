@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualisez un Carnet De Addresses Wi-Fi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .search-box {
+            width: 500px;
+        }
+        #searchInput {
+            width: 100%;
+            height: 30px;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .search-input {
+            width: 100%;
+            height: 40px;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .matching-card {
+            animation: match 0.5s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-800 min-h-screen">
+    <div id="searchInput" class="search-box"></div>
+    <div id="result-card"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialisation des variables
+        const router = {
+            element: "#router",
+            class: "w-20 h-48 bg-blue-600 rounded-full"
+        };
+        
+        const accessCard = {
+            element: "#access-card",
+            class: "w-12 h-36 bg-green-500"
+        };
+
+        let resultCardList = [];
+        let isMatched;
+        let query;
+
+        // Fonction pour récupérer les recettes
+        function getRecipes() {
+            const recipes = ['98.01.12.12', '98.01.13.13', '98.01.14.14'];
+            
+            return recipes;
+        }
+
+        // Fonction pour afficher les recetes
+        function showRecipes() {
+            const matches = resultCardList.filter(card => card.mac === query);
+            this.children.forEach(child => child.classList.add('matching-card'));
+            
+            if (matches.length > 0) {
+                matches.forEach(matchingCard => {
+                    matchingCard.classList.add('selected');
+                });
+            });
+        }
+
+        // Fonction pour afficher les resultats match
+        function showMatched() {
+            isMatched = true;
+            
+            for (let i = 0; i < resultCardList.length; i++) {
+                if (resultCardList[i].mac === query) {
+                    resultCardList[i].matched = true;
+                }
+            }
+
+            setTimeout(() => {
+                this.children.forEach(child => child.classList.remove('matching-card'));
+                isMatched = false;
+                showRecipes();
+            }, 200);
+        }
+
+        // Initialisation
+        document.getElementById('searchInput').addEventListener('input', function() {
+            query = this.value;
+            showRecipes());
+        });
+
+        document.getElementById('searchInput').addEventListener('click', () => {
+            if (query) {
+                isMatched = false;
+                
+                for (let i = 0; i < getRecipes(); i++) {
+                    const card = {
+                        element: accessCard,
+                        mac: `${query}#${i}`;
+                    };
+                    resultCardList.push(card);
+                }
+
+                setTimeout(() => {
+                    showMatched();
+                }, 150);
+            }
+        });
+
+        // Initialisation de Bootstrap
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('result-card');
+            
+            (container).css({
+                backgroundColor: 'white',
+                padding: '2rem'
+            });
+            
+            // Initialiser le search
+            showRecipes();
+        });
+    </script>
+</body>
+</html>
